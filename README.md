@@ -12,6 +12,7 @@ A comprehensive solution that connects patients with pharmacuetical brands for m
 
 ## Run locally
 
-1. poetry install
-2. poetry run start
-3. open 'chat_with_assistant.html' and interact with agent
+1. set OPENAI_API_KEY environment variable
+2. poetry install
+3. poetry run start
+4. open 'chat_with_assistant.html' and interact with agent

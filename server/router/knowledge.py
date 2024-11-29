@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 # spider_reader = SpiderWebReader(
-#     api_key='sk-20468862-1eea-4d66-8ebe-b8b6e01c8d26',
+#     api_key=os.getenv('SPIDER_API_KEY'),
 #     mode='crawl',
 #     # params={} # Optional parameters see more on https://spider.cloud/docs/api
 # )

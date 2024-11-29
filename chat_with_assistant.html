@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <title>Chat with RxRadar Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            padding: 0;
+        }
+
+        .main-container {
+            border: 1px solid black; 
+            border-radius: 10px;
+            max-width: 650px;
+            min-height: 650px;
+            padding: 20px;
+        }
+
+        h1 span {
+            color: rgb(37 99 235/1);
+        }
+
+        #messageInput {
+            width: 500px;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #messages {
+            margin-bottom: 20px;
+        }
+
+        #messages div {
+            padding: 5px 0;
+        }
+
+        button {
+            /* Match the font styles of the input element */
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+
+            /* Match the padding and margin of the input element */
+            padding: 10px 20px;
+            margin: 0 10px;
+
+            /* Add some basic button styles */
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #3e8e41;
+        }
+
+        .user-title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Chat with <span>RxRadar</span> Assistant</h1>
+    <div class="main-container">
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message..." onkeydown="handleKeyDown(event);" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8000/agent/ws");
+
+        ws.onmessage = function (event) {
+            let eventData;
+            try {
+                eventData = JSON.parse(event.data);
+
+                if (eventData && eventData.conversation) {
+                    // load older chat
+                    const messages = document.getElementById("messages");
+
+                    for (const chatConv of eventData.conversation) {
+                        const message = document.createElement("div");
+
+                        const converter = new showdown.Converter();
+                        message.innerHTML = converter.makeHtml(`<span class="user-title">${capitalizeFirstLetter(chatConv.role)}: </span>` + chatConv.message);
+
+                        messages.appendChild(message);
+                    }
+
+                    return;
+                }
+            } catch (e) {
+                const messages = document.getElementById("messages");
+                const message = document.createElement("div");
+
+                const converter = new showdown.Converter();
+                message.innerHTML = converter.makeHtml('<span class="user-title">Assistant: </span>' + event.data);
+
+                messages.appendChild(message);
+            }
+        };
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+
+            const messages = document.getElementById("messages");
+            const message = document.createElement("div");
+            message.innerHTML = '<span class="user-title">User: </span>' + input.value;
+            messages.appendChild(message);
+
+            ws.send(input.value);
+            input.value = "";
+        }
+
+        function handleKeyDown(event) {
+            var code = (event.keyCode ? event.keyCode : event.which);
+            if (code == 13) { //Enter keycode
+                sendMessage();
+            }
+        }
+
+        function capitalizeFirstLetter(val) {
+            return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+        }
+    </script>
+</body>
+
+</html>

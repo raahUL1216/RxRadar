@@ -73,8 +73,7 @@ def create_index():
 
     vector_store = FaissVectorStore(faiss_index=faiss_index)
     storage_context = StorageContext.from_defaults(
-        vector_store=vector_store,
-        persist_dir="./server/storage"
+        vector_store=vector_store
     )
     index = VectorStoreIndex.from_documents(
         documents, storage_context=storage_context
@@ -86,9 +85,9 @@ def create_index():
 
 def get_med_index():
     # load index from disk
-	vector_store = FaissVectorStore.from_persist_dir("./server/storage")
+	vector_store = FaissVectorStore.from_persist_dir("storage")
 	storage_context = StorageContext.from_defaults(
-		vector_store=vector_store, persist_dir="./server/storage"
+		vector_store=vector_store, persist_dir="storage"
 	)
 	index = load_index_from_storage(storage_context=storage_context)
 	return index

@@ -47,7 +47,7 @@ def parse_webpages(urls: List[str]):
         html_to_text=True
     ).load_data(urls=urls)
    
-    print(f'parsed documents from {urls} successfully.')
+    print(f'parsed documents from {urls} successfully. total documents: {len(documents)}')
 
     store_documents(documents)
 

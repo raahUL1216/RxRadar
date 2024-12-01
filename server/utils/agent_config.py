@@ -41,9 +41,9 @@ def get_medicine_tools() -> list[BaseTool]:
         return answer
     
     def lookup_medicine_info(ctx: Context, medicine_name: str) -> str:
-        """Useful for looking up a medicine info."""
+        """Useful for looking up a product or medicine info."""
         ctx.write_event_to_stream(
-            ProgressEvent(msg=f"Looking up medicine info for {medicine_name}")
+            ProgressEvent(msg=f"Looking up info for {medicine_name}")
         )
 
         answer = get_answer(f'Briefly explain the medicine: {medicine_name}. If there is no reference of {medicine_name}, response with NA.')
@@ -272,7 +272,7 @@ Guidelines:
 - For comparing prices, provide a detailed price comparison using the `compare_medicine_prices` tool.
 - For buying medicines, perform below steps in strict order:
   1) Ensure the user provides a username, password, and delivery address.
-  2) Use the `login` tool to authenticate the user before proceeding.
+  2) Use the `login` tool to authenticate the user first and then only check for valid prescription
   3) Confirm the order and provide the user with delivery details.
             """,
             tools=get_medicine_tools(),
